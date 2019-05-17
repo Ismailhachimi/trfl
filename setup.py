@@ -21,12 +21,16 @@ from __future__ import print_function
 import unittest
 from setuptools import find_packages
 from setuptools import setup
+from setuptools.dist import Distribution
 
-REQUIRED_PACKAGES = ['six', 'absl-py', 'numpy', 'dm-sonnet']
+REQUIRED_PACKAGES = ['six', 'absl-py', 'numpy', 'dm-sonnet', 'wrapt']
 EXTRA_PACKAGES = {
-    'tensorflow': ['tensorflow>=1.8.0', 'tensorflow-probability>=0.4.0'],
-    'tensorflow with gpu': ['tensorflow-gpu>=1.8.0',
-                            'tensorflow-probability-gpu>=0.4.0'],
+    'tensorflow': [
+        'tensorflow>=1.13,<1.14', 'tensorflow-probability>=0.6,<0.7'
+    ],
+    'tensorflow with gpu': [
+        'tensorflow-gpu>=1.13,<1.14', 'tensorflow-probability>=0.6,<0.7'
+    ],
 }
 
 
@@ -36,9 +40,16 @@ def trfl_test_suite():
   return test_suite
 
 
+class BinaryDistribution(Distribution):
+  """This class is needed in order to create OS specific wheels."""
+
+  def has_ext_modules(self):
+    return True
+
+
 setup(
     name='trfl',
-    version='1.0',
+    version='1.0.1',
     description=('trfl is a library of building blocks for '
                  'reinforcement learning algorithms.'),
     long_description='',
@@ -49,16 +60,18 @@ setup(
     packages=find_packages(),
     install_requires=REQUIRED_PACKAGES,
     extras_require=EXTRA_PACKAGES,
+    # Add in any packaged data.
+    include_package_data=True,
     zip_safe=False,
-    license='Apache 2.0',
+    distclass=BinaryDistribution,
+    # PyPI package information.
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Intended Audience :: Education',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Operating System :: Unix',
         'Programming Language :: Python :: 2.7',
@@ -68,6 +81,7 @@ setup(
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Software Development :: Libraries',
     ],
+    license='Apache 2.0',
     keywords='trfl truffle tensorflow tensor machine reinforcement learning',
     test_suite='setup.trfl_test_suite',
 )

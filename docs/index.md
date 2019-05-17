@@ -44,7 +44,7 @@ import trfl
 
 Define the relevant data associated to a `transition` in the environment from
 state `s_tm1` to state `s_t`. This typically includes action values (or other
-characterization of the agent's policy) in both the `sorce` and `destination`
+characterization of the agent's policy) in both the `source` and `destination`
 states. The action `a_tm1` is the one selected after observing `s_tm1`, and
 resulted in observing the immediate reward `r_t` and the subsequent state `s_t`.
 `pcont_t` represents a time dependent discount factor, or (equivalently) the
@@ -122,13 +122,14 @@ Throughout the package, we use the following conventions:
         length. Tensors are time-major, and have shape `[T, B, ...]`. Index `0`
         of the time dimension is assumed to be the start of the sequence.
 
-## Implemented functions
+## Learning updates
 
 *   State Value learning:
 
     *   [td_learning](trfl.md#td_learningv_tm1-r_t-pcont_t-v_t-nametdlearning)
     *   [generalized_lambda_returns](trfl.md#generalized_lambda_returnsrewards-pcontinues-values-bootstrap_value-lambda_1-namegeneralized_lambda_returns)
     *   [td_lambda](trfl.md#td_lambdastate_values-rewards-pcontinues-bootstrap_value-lambda_1-namebaselineloss)
+    *   [qv_max](trfl.md#qv_maxv_tm1-r_t-pcont_t-q_t-nameqvmax)
 
 *   Discrete-action Value learning:
 
@@ -138,6 +139,7 @@ Throughout the package, we use the following conventions:
     *   [sarsa](trfl.md#sarsaq_tm1-a_tm1-r_t-pcont_t-q_t-a_t-namesarsa)
     *   [sarse](trfl.md#sarseq_tm1-a_tm1-r_t-pcont_t-q_t-probs_a_t-debugfalse-namesarse)
     *   [qlambda](trfl.md#qlambdaq_tm1-a_tm1-r_t-pcont_t-q_t-lambda_-namegeneralizedqlambda)
+    *   [qv_learning](trfl.md#qv_learningq_tm1-a_tm1-r_t-pcont_t-v_t-nameqvlearning)
 
 *   Distributional Value learning:
 
@@ -174,12 +176,35 @@ Throughout the package, we use the following conventions:
     *   [retrace](trfl.md#retracelambda_-qs-targnet_qs-actions-rewards-pcontinues-target_policy_probs-behaviour_policy_probs-stop_targnet_gradientstrue-namenone)
     *   [retrace_core](trfl.md#retrace_corelambda_-q_tm1-a_tm1-r_t-pcont_t-target_policy_t-behaviour_policy_t-targnet_q_t-a_t-stop_targnet_gradientstrue-namenone)
 
+*   Target Network Updating:
+
+    *   [update_target_variables](trfl.md#update_target_variablestarget_variables-source_variables-tau10-use_lockingfalse-nameupdate_target_variables)
+    *   [periodic_target_update](trfl.md#periodic_target_updatetarget_variables-source_variables-update_period-tau10,use_lockingfalse-nameperiodic_target_update)
+
 *   V-trace:
 
     *   [vtrace_from_logits](trfl.md#vtrace_from_logitsbehaviour_policy_logits-target_policy_logits-actions-discounts-rewards-values-bootstrap_value-clip_rho_threshold10-clip_pg_rho_threshold10-namevtrace_from_logits)
     *   [vtrace_from_importance_weights](trfl.md#vtrace_from_importance_weightslog_rhos-discounts-rewards-values-bootstrap_value-clip_rho_threshold10-clip_pg_rho_threshold10-namevtrace_from_importance_weights)
 
-## Others
+## Other
+
+*   Clipping ops
+
+    *   [huber_loss](trfl.md#huber_lossinput_tensor-quadratic_linear_boundary-namenone)
+
+*   Distributions
+
+    *   [l2_project](trfl.md#l2_projectsupport-weights-new_support)
+    *   [hard_cumulative_project](trfl.md#hard_cumulative_projectsupport-weights-new_support-reverse)
+    *   [factorised_kl_gaussian](trfl.md#factorised_kl_gaussiandist1_mean-dist1_covariance_or_scale-dist2_mean-dist2_covariance_or_scale-both_diagonalfalse)
+
+*   Indexing ops
+
+    *   [batched_index](trfl.md#batched_indexvalues-indices)
+
+*   Periodic execution ops
+
+    *   [periodically](trfl.md#periodicallybody-period-nameperiodically)
 
 *   Sequence ops
 
